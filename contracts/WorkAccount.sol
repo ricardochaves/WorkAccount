@@ -9,23 +9,23 @@ contract WorkAccount {
     struct VirtualAccount {
         address owner;
         address worker;
-        address retail_store;
+        address retailStore;
         VirtualAccountStatus status;
     }
 
     VirtualAccount[] private _accounts;
 
     modifier onlyIfVirtualAccountExists(uint itemID) {
-        require(_accounts[itemID].owner != address(0));
+        require(_accounts[itemID-1].owner != address(0));
         _;
     }
 
-    function addNewVirtualAccount(address worker, address retail_store) public returns (uint){
+    function addNewVirtualAccount(address worker, address retailStore) public returns (uint){
       
       _accounts.push(VirtualAccount({
           owner: msg.sender,
           worker: worker,
-          retail_store: retail_store,
+          retailStore: retailStore,
           status: VirtualAccountStatus.active
           }));
 
@@ -36,8 +36,8 @@ contract WorkAccount {
 
     function getVirtualAccount(uint itemID) public view onlyIfVirtualAccountExists(itemID)returns (address, address, address, uint) {
 
-        VirtualAccount storage virtual_account = _accounts[itemID];
-        return (virtual_account.owner, virtual_account.worker, virtual_account.retail_store, uint(virtual_account.status));
+        VirtualAccount storage virtualAccount = _accounts[itemID-1];
+        return (virtualAccount.owner, virtualAccount.worker, virtualAccount.retailStore, uint(virtualAccount.status));
     }
 
 }
