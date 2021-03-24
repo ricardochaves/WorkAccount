@@ -40,6 +40,18 @@ contract TestWorkAccount {
     
     }
 
+    function testdepositETHShouldRaiseError() public {
+        bool r;
 
+        address payable fakeAccount = 0x0000000000000000000000000000000000000000;
 
+        address payable expectedWorker = 0x0000000000000000000000000000000000000000;
+        address payable expectedRetailStore = 0x5c15741C7ABb1b0E8FB0BD41b5ed8c17219926A1;
+
+        uint accountID = work_account.addNewVirtualAccount(expectedWorker, expectedRetailStore);
+
+        (r,a) = address(work_account).call("depositETH");
+
+        Assert.isFalse(r,"Just the owner can deposit ETH");
+    }
 }
