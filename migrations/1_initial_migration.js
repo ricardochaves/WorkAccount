@@ -1,8 +1,8 @@
 const Migrations = artifacts.require("Migrations");
-const WorkAccount = artifacts.require("WorkAccount");
+const Playground = artifacts.require("Playground");
 
 module.exports = function (deployer) {
   deployer.deploy(Migrations);
-  deployer.deploy(WorkAccount);  
+  deployer.deploy(Playground);  
 
 };
