@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 contract Owner {
    address owner;
-   constructor() public {
+   constructor() {
       owner = msg.sender;
    }
    modifier onlyOwner {
@@ -30,5 +30,16 @@ contract Playground is Owner {
     function JustTheOwnerCanExecute() public view onlyOwner {
         msg.sender;
     }
+
+
+    event OwnerAccesAcces();
+    event ReturnUint(uint number);
+
+    function EmitOwnerAccesAccesEvent() public onlyOwner {
+        emit OwnerAccesAcces();
+        emit ReturnUint(21);
+    }
+
+    
 
 }
