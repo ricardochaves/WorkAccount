@@ -40,6 +40,14 @@ contract Playground is Owner {
         emit ReturnUint(21);
     }
 
+    function ConvertSenderToPayable() payable public  {
+        address payable payableAddress;
+        payableAddress = payable(msg.sender);
+    }
     
+    function DepositFromSenderToAccount(address payable receiver, uint amount) payable public {
+        receiver.transfer(amount);
+    }
+
 
 }

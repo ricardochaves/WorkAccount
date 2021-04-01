@@ -44,5 +44,31 @@ contract('Playground', function (accounts) {
       
     });
 
+    context("Events", function() {
+      it('Should emit events: OwnerAccesAcces and ReturnUint', async function () {
+        let instance = await Playground.deployed();
+        const result = await instance.EmitOwnerAccesAccesEvent({from: owner});
+        truffleAssert.eventEmitted(result, 'OwnerAccesAcces');
+        truffleAssert.eventEmitted(result, 'ReturnUint', (event) => {
+          return event[0].words[0] == 21;
+        });
+        //truffleAssert.prettyPrintEmittedEvents(result);
+      });
+    });
+
+    context("Payable Address", function() {
+      it('Should execute without error', async function () {
+        let instance = await Playground.deployed();
+        const result = await instance.ConvertSenderToPayable({from: owner});
+      });
+    });
+
+    context("Transactions", function() {
+      it("Should transfer some eth", async function() {
+        let instance = await Playground.deployed();
+        const result = await instance.DepositFromSenderToAccount(notOwner, 1);
+      })
+    })
+
   });
 });
