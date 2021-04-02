@@ -56,7 +56,9 @@ contract('Playground', function (accounts) {
 
     context("Transactions", function() {
       it("Should transfer some eth to a contract", async function() {
-        await this.contract.send(10, {from: accounts[0]});
+        amount = 10;
+        await this.contract.send(amount, {from: accounts[0]});
+        assert.equal(await web3.eth.getBalance(this.contract.address), amount);
       });
 
       it("Should transfer some eth to a account", async function() {
