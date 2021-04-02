@@ -2,14 +2,11 @@ const Playground = artifacts.require('Playground');
 const truffleAssert = require('truffle-assertions');
 
 contract('Playground', function (accounts) {
-  const [ owner, notOwner, _ ] = accounts;
-
-
+  const [ fundingAccount, notOwner, acc3, _ ] = accounts;
 
   context('once deployed', function () {
     beforeEach(async function () {
-
-      this.contract = await Playground.new();
+      this.contract = await Playground.new({ from: fundingAccount });
     });
 
     it('should some two uint numbers', async function () {
@@ -18,36 +15,31 @@ contract('Playground', function (accounts) {
     });
 
     it('should receive the sender from msg', async function () {
-      let instance = await Playground.deployed();
-      let result = await instance.ReceiveSenderFromMsg.call({from: owner});
-      assert.equal(result,owner);
+      let result = await this.contract.ReceiveSenderFromMsg.call({from: fundingAccount});
+      assert.equal(result,fundingAccount);
       
     });
 
     it('should receive the value from msg', async function () {
-      let instance = await Playground.deployed();
-      let result = await instance.ReceiveValueFromMsg.call({value: 10});
+      let result = await this.contract.ReceiveValueFromMsg.call({value: 10});
       assert.equal(result.toNumber(),10);
     });
 
     context("Modifiers", function (){
 
       it('sould execute with sucess using owner account', async function (){
-        let instance = await Playground.deployed();
-        await instance.JustTheOwnerCanExecute();
+        await this.contract.JustTheOwnerCanExecute();
       });
 
       it('rejects when the send is not the owner', async function () {
-        let instance = await Playground.deployed();
-        await truffleAssert.reverts(instance.JustTheOwnerCanExecute({from: notOwner}));
+        await truffleAssert.reverts(this.contract.JustTheOwnerCanExecute({from: notOwner}));
       });
       
     });
 
     context("Events", function() {
       it('Should emit events: OwnerAccesAcces and ReturnUint', async function () {
-        let instance = await Playground.deployed();
-        const result = await instance.EmitOwnerAccesAccesEvent({from: owner});
+        const result = await this.contract.EmitOwnerAccesAccesEvent({from: fundingAccount});
         truffleAssert.eventEmitted(result, 'OwnerAccesAcces');
         truffleAssert.eventEmitted(result, 'ReturnUint', (event) => {
           return event[0].words[0] == 21;
@@ -58,17 +50,25 @@ contract('Playground', function (accounts) {
 
     context("Payable Address", function() {
       it('Should execute without error', async function () {
-        let instance = await Playground.deployed();
-        const result = await instance.ConvertSenderToPayable({from: owner});
+        const result = await this.contract.ConvertSenderToPayable({from: fundingAccount});
       });
     });
 
     context("Transactions", function() {
-      it("Should transfer some eth", async function() {
-        let instance = await Playground.deployed();
-        const result = await instance.DepositFromSenderToAccount(notOwner, 1);
-      })
-    })
+      it("Should transfer some eth to a contract", async function() {
+        await this.contract.send(10, {from: accounts[0]});
+      });
 
+      it("Should transfer some eth to a account", async function() {
+        await this.contract.send(10, {from: accounts[0]});
+        let amountToTransfer = BigInt(1);
+        let BalanceAcc3  = await web3.eth.getBalance(acc3)
+        let expectedBalanceAcc3 = BigInt(BalanceAcc3) + amountToTransfer;
+
+        await this.contract.DepositFromSenderToAccount(acc3, amountToTransfer);
+
+        assert.equal(await web3.eth.getBalance(acc3), expectedBalanceAcc3); 
+      });
+    });
   });
 });

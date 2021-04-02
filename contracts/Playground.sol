@@ -49,5 +49,13 @@ contract Playground is Owner {
         receiver.transfer(amount);
     }
 
+    //uint x;
+    //uint y;
+    // @notice Will receive any eth sent to the contract
+    //fallback() external payable { x = 1; y = msg.value; }
 
+    event Received(address, uint);
+    receive () external payable {
+        emit Received(msg.sender, msg.value);
+    }
 }
