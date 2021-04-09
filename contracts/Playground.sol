@@ -19,11 +19,11 @@ contract Playground is Owner {
         return n1 + n2;
     }
     
-    function ReceiveSenderFromMsg() payable public returns (address){
+    function ReceiveSenderFromMsg() payable public returns (address) {
         return msg.sender;
     }
 
-    function ReceiveValueFromMsg() payable public returns (uint){
+    function ReceiveValueFromMsg() payable public returns (uint) {
         return msg.value;
     }
 
@@ -58,4 +58,23 @@ contract Playground is Owner {
     receive () external payable {
         emit Received(msg.sender, msg.value);
     }
+
+    struct Account { // Struct
+        address owner;
+        address worker;
+        address retailStore;
+        uint value;
+    }
+
+    Account[] _accounts;
+
+    function createAccount(address owner, address worker, address retailStore) public pure {
+        Account(owner, worker, retailStore, 1);
+    }
+
+    function addStructInArray(address owner, address worker, address retailStore) public returns (uint) {
+        _accounts.push(Account(owner, worker, retailStore, 1));
+        return _accounts.length - 1;
+    }
+    
 }

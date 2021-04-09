@@ -72,5 +72,18 @@ contract('Playground', function (accounts) {
         assert.equal(await web3.eth.getBalance(acc3), expectedBalanceAcc3); 
       });
     });
+
+    context("Structs", function() {
+      it("Should create new struct", async function() {
+        await this.contract.createAccount(fundingAccount, notOwner, acc3);
+      });
+
+      it("Should return a 'id' of a item", async function() {
+        let itemId = await this.contract.addStructInArray.call(fundingAccount, notOwner, acc3)
+        assert.equal(itemId.toNumber(), 0); 
+      });
+
+      
+    });
   });
 });
